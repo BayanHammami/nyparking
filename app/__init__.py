@@ -49,7 +49,7 @@ response = {
     ]
 }
  
-def run_model(response,args):
+def run_model(args):
     #relay back the request
     response['inputs']['data_set']=args['data_set']
     response['inputs']['start_time']=args['start_time']
