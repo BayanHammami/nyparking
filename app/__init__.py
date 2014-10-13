@@ -50,13 +50,13 @@ response = {
 }
  
 def get_model(args):
-        #relay back the request
-        response['inputs']['data_set']=args['data_set']
-        response['inputs']['start_time']=args['start_time']
-        response['inputs']['duration']=args['duration']
-        response['inputs']['radius']=args['radius']
-        response['inputs']['lat']=args['lat']
-        response['inputs']['lng']=args['lng']
+    #relay back the request
+    response['inputs']['data_set']=args['data_set']
+    response['inputs']['start_time']=args['start_time']
+    response['inputs']['duration']=args['duration']
+    response['inputs']['radius']=args['radius']
+    response['inputs']['lat']=args['lat']
+    response['inputs']['lng']=args['lng']
     return response
 
 #handle get request    
