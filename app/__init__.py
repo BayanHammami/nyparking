@@ -70,7 +70,7 @@ def get_task(task_id):
     task = filter(lambda t: t['id'] == task_id, tasks)
     if len(task) == 0:
         abort(404)
-    return jsonify( { 'task': make_public_task(task[0]) } )
+    return jsonify( { 'task': response } )
  
 @app.route('/todo/api/v1.0/tasks', methods = ['POST'])
 def create_task():
