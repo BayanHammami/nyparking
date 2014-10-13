@@ -7,8 +7,7 @@ app = Flask(__name__, static_url_path = "")
 
 parser = reqparse.RequestParser()
 parser.add_argument('year', type=int, help='year cannot be converted')
-parser.add_argument('radius', type=str)
-args = parser.parse_args()
+parser.add_argument('radius', type=str, location='args')
 
 @app.errorhandler(400)
 def not_found(error):
@@ -67,6 +66,7 @@ def make_public_task(task):
     
 @app.route('/todo/api/v1.0/tasks', methods = ['GET'])
 def get_tasks():
+    args = parser.parse_args()
     return jsonify( { 'tasks': response } )
  
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods = ['GET'])
