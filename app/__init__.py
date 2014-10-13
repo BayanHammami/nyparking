@@ -67,9 +67,7 @@ def get_tasks():
  
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods = ['GET'])
 def get_task(task_id):
-    task = filter(lambda t: t['id'] == task_id, tasks)
-    if len(task) == 0:
-        abort(404)
+    response['most_likely_probability']=task_id
     return jsonify( { 'task': response } )
  
 @app.route('/todo/api/v1.0/tasks', methods = ['POST'])
