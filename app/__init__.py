@@ -31,12 +31,12 @@ response = {
     'p_interval_start': 0.2,
     'p_interval_end': 0.4,
     'inputs': {
-        'data_set': 2013,
-        'start_time': 100,
-        'latitude': 40.662670,
-        'longitude': -73.908203,
-        'start_time': '14:00',
-        'duration': 60
+        'data_set': 0,
+        'start_time': '',
+        'lat': 0,
+        'lng': 0,
+        'duration': 0,
+        'radius': 0
     },
     'number_of_fines': 80,
     'number_of_periods': 365,
