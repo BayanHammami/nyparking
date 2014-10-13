@@ -6,11 +6,8 @@ from flask.ext.restful import reqparse
 app = Flask(__name__, static_url_path = "")
 
 parser = reqparse.RequestParser()
-parser.add_argument(
-    'year', dest='year',
-    type=str, location='args',
-    required=False, help='The user\'s username',
-)
+parser.add_argument('year', type=int, help='year cannot be converted')
+parser.add_argument('radius', type=str)
 args = parser.parse_args()
 
 @app.errorhandler(400)
