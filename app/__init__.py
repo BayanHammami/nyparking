@@ -6,8 +6,8 @@ from flask.ext.restful import reqparse
 app = Flask(__name__, static_url_path = "")
 
 parser = reqparse.RequestParser()
-parser.add_argument('year', type=int, help='year cannot be converted')
-parser.add_argument('radius', type=str, location='args')
+parser.add_argument('year', type=int, required=True, location='args', help='year cannot be converted')
+parser.add_argument('radius', type=int, required=True, location='args', help='Radius cannot be converted')
 
 @app.errorhandler(400)
 def not_found(error):
