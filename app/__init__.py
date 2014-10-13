@@ -48,7 +48,8 @@ response = {
 @app.route('/nyparking/api/v1.0/model', methods = ['GET'])
 def get_model():
     args = parser.parse_args()
-    response['most_likely_probability']=args['radius']
+    response['inputs']['year']=args['year']
+    response['inputs']['radius']=args['radius']
     return jsonify( { 'tasks': response } )
  
 
