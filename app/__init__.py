@@ -49,7 +49,7 @@ response = {
     ]
 }
  
-def get_model(args):
+def run_model(response,args):
     #relay back the request
     response['inputs']['data_set']=args['data_set']
     response['inputs']['start_time']=args['start_time']
@@ -63,7 +63,7 @@ def get_model(args):
 @app.route('/nyparking/api/v1.0/model', methods = ['GET'])
 def get_model():
     args = parser.parse_args()
-    return jsonify( { 'tasks': get_model(args) } )
+    return jsonify( { 'tasks': run_model(args) } )
  
 
     
