@@ -8,8 +8,13 @@ app = Flask(__name__, static_url_path = "")
 
 #validation of querystring parameters
 parser = reqparse.RequestParser()
-parser.add_argument('year', type=int, required=True, location='args', help='year cannot be converted')
-parser.add_argument('radius', type=int, required=True, location='args', help='Radius cannot be converted')
+parser.add_argument('data_set', type=str, required=True, location='args')
+parser.add_argument('start_time', type=str, required=True, location='args')
+parser.add_argument('duration', type=int, required=True, location='args')
+parser.add_argument('radius', type=int, required=True, location='args')
+parser.add_argument('lat', type=str, required=True, location='args')
+parser.add_argument('lng', type=str, required=True, location='args', help='long cannot be converted')
+
 
 #error handlers
 @app.errorhandler(400)
@@ -26,8 +31,8 @@ response = {
     'p_interval_start': 0.2,
     'p_interval_end': 0.4,
     'inputs': {
-        'year': 2013,
-        'radius': 100,
+        'data_set': 2013,
+        'start_time': 100,
         'latitude': 40.662670,
         'longitude': -73.908203,
         'start_time': '14:00',
@@ -44,13 +49,21 @@ response = {
     ]
 }
  
+def get_model(args):
+        #relay back the request
+        response['inputs']['data_set']=args['data_set']
+        response['inputs']['start_time']=args['start_time']
+        response['inputs']['duration']=args['duration']
+        response['inputs']['radius']=args['radius']
+        response['inputs']['lat']=args['lat']
+        response['inputs']['lng']=args['lng']
+    return response
+
 #handle get request    
 @app.route('/nyparking/api/v1.0/model', methods = ['GET'])
 def get_model():
     args = parser.parse_args()
-    response['inputs']['year']=args['year']
-    response['inputs']['radius']=args['radius']
-    return jsonify( { 'tasks': response } )
+    return jsonify( { 'tasks': get_model(args) } )
  
 
     
