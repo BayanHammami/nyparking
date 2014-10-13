@@ -3,6 +3,15 @@ from flask import request
 
 app = Flask(__name__)
 
+@app.route('/get_data', methods=['GET'])
+def get_estimates():
+    print request.args.get('year')
+    print request.args.get('radius')
+    print request.args.get('latitude')
+    print request.args.get('longitude')    
+    print request.args.get('start_time')
+    print request.args.get('duration')
+
 response = {
     'most_likely_probability': 0.3,
     'p_interval_start': 0.2,
@@ -29,15 +38,6 @@ response = {
 @app.route('/prob', methods=['GET'])
 def get_prob():
     return jsonify({'prob': response})
-
-@app.route('/get_data', methods=['GET'])
-def get_estimates():
-    print request.args.get('year')
-    print request.args.get('radius')
-    print request.args.get('latitude')
-    print request.args.get('longitude')    
-    print request.args.get('start_time')
-    print request.args.get('duration')
 
 if __name__ == "__main__":
     app.run()
