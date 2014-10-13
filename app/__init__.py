@@ -27,9 +27,9 @@ def not_found(error):
  
 #base json response
 response = {
-    'most_likely_probability': 0.3,
-    'p_interval_start': 0.2,
-    'p_interval_end': 0.4,
+    'number_of_fines': 0,
+    'number_of_dates_with_fines': 0,
+    'number_of_possible_dates': 0,
     'inputs': {
         'data_set': 0,
         'start_time': '',
@@ -38,10 +38,9 @@ response = {
         'duration': 0,
         'radius': 0
     },
-    'number_of_fines': 80,
-    'number_of_periods': 365,
-    'number_of_periods_with_fines': 42, # does not match probability, but never mind!
-    'historical': [
+    'most_likely_probability': 0,
+    'probability_interval': 0,
+    'historical_sample': [
         { 'lat': 40.662670, 'long': -73.908203, 'date': '2013-03-02' },
         { 'lat': 40.664764, 'long': -73.904900, 'date': '2013-05-03' },
         { 'lat': 40.690067, 'long': -73.991173, 'date': '2013-06-06' },
