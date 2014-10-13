@@ -1,9 +1,49 @@
 
 #!flask/bin/python
 from flask import Flask, jsonify, abort, request, make_response, url_for
-
+from flask.ext.restful import reqparse
  
 app = Flask(__name__, static_url_path = "")
+
+parser = reqparse.RequestParser()
+parser.add_argument(
+    'year', dest='year',
+    type=str, location='args',
+    required=True, help='The user\'s username',
+)
+parser.add_argument(
+    'radius', dest='radius',
+    type=email, location='args',
+    required=True, help='The user\'s email',
+)
+parser.add_argument(
+    'latitude', dest='latitude',
+    type=int, location='args',
+    required=True, help='The user\'s priority',
+)
+parser.add_argument(
+    'longitude', dest='longitude',
+    type=int, location='args',
+    required=True, help='The user\'s priority',
+)
+parser.add_argument(
+    'start_time', dest='start_time',
+    type=int, location='args',
+    required=True, choices=range(5), help='The user\'s priority 2',
+)
+parser.add_argument(
+    'radius', dest='radius',
+    type=int, location='args',
+    required=True, choices=range(5), help='The user\'s priority 3' ,
+)
+parser.add_argument(
+    'duration', dest='duration',
+    type=int, location='args',
+    required=True, choices=range(5), help='The user\'s priority 4',
+)
+
+args = parser.parse_args()
+
 
 
 @app.errorhandler(400)
