@@ -11,7 +11,7 @@ parser.add_argument(
     type=str, location='args',
     required=False, help='The user\'s username',
 )
-args = parser.parse_args()
+
 
 
 
