@@ -66,8 +66,8 @@ response = {
 def get_summary_pg():
     #result = db.session.query().from_statement('select * from app_summary_vw').all()
     connection = db.engine.connect()
-    #result = connection.execute("select number_of_fines from public.app_summary_vw")
-    result = connection.execute("SELECT CURRENT_DATE as out_var")
+    result = connection.execute("select number_of_fines from public.app_summary_vw")
+    #result = connection.execute("SELECT CURRENT_DATE as out_var")
     for row in result:
         print "out_var:", row['out_var']
     connection.close()
