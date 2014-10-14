@@ -66,17 +66,19 @@ response = {
 def get_summary_pg():
     #result = db.session.query().from_statement('select * from app_summary_vw').all()
     connection = db.engine.connect()
-    result = connection.execute("select number_of_fines from public.app_summary_vw")
-    #result = connection.execute("SELECT CURRENT_DATE as out_var")
+    #result = connection.execute("select number_of_fines from public.app_summary_vw")
+    result = connection.execute("SELECT count(*) as out_var c FROM pg_catalog.pg_tables")
     for row in result:
-        print "out_var:", row['out_var']
+        outv =  row['out_var']
     connection.close()
     #result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
-    return 0
+    return outv
 
 def run_model(args):
-    get_summary_pg()
+    result = get_summary_pg()
     
+    response['number_of_fines'] = result
+
     #relay back the request
     response['inputs']['data_set']=args['data_set']
     response['inputs']['start_time']=args['start_time']
