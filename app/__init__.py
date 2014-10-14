@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
-app = db.init_app(app)
+db.create_all()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
