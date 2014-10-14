@@ -5,9 +5,9 @@ from flask.ext.restful import reqparse
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
  
-app = Flask(__name__, static_url_path = "")
-app.config.from_object(os.environ['APP_SETTINGS'])
-db = SQLAlchemy(app)
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_object('config')
+app.config.from_pyfile('config.py')
 
 
 #validation of querystring parameters
