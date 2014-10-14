@@ -64,8 +64,9 @@ response = {
  
 def get_summary_pg():
     #result = db.session.query().from_statement('select * from app_summary_vw').all()
-    result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
-    return result
+    db.engine.connect()
+    #result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
+    return 0
 
 def run_model(args):
     get_summary_pg()
