@@ -6,22 +6,22 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = 'secret'
-    SSQLALCHEMY_DATABASE_URI = 'postgresql://demodata:password@xxdemodata.c3ctvtncfc4b.ap-southeast-2.rds.amazonaws.com:5432/demodata'
+    SSQLALCHEMY_DATABASE_URI = 'postgresql://demodata:password@demodata.c3ctvtncfc4b.ap-southeast-2.rds.amazonaws.com:5432/demodata'
 
 
-class ProductionConfig(Config):
+class ProdConfig(Config):
     DEBUG = False
 
 
-class StagingConfig(Config):
+class PreprodConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
 
 
-class DevelopmentConfig(Config):
+class DevConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
 
 
-class TestingConfig(Config):
+class TestConfig(Config):
     TESTING = True
