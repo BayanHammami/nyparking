@@ -24,12 +24,12 @@ class User(db.Model):
 
 #validation of querystring parameters
 parser = reqparse.RequestParser()
-parser.add_argument('data_set', type=str, required=True, location='args')
-parser.add_argument('start_time', type=str, required=True, location='args')
-parser.add_argument('duration', type=int, required=True, location='args')
-parser.add_argument('radius', type=int, required=True, location='args')
-parser.add_argument('lat', type=str, required=True, location='args')
-parser.add_argument('lng', type=str, required=True, location='args', help='long cannot be converted')
+#parser.add_argument('data_set', type=str, required=True, location='args')
+#parser.add_argument('start_time', type=str, required=True, location='args')
+#parser.add_argument('duration', type=int, required=True, location='args')
+#parser.add_argument('radius', type=int, required=True, location='args')
+#parser.add_argument('lat', type=str, required=True, location='args')
+#parser.add_argument('lng', type=str, required=True, location='args', help='long cannot be converted')
 
 
 #error handlers
