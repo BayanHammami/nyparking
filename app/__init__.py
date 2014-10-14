@@ -64,7 +64,7 @@ response = {
 }
  
 def get_summary_pg():
-    result = db.session.query().from_statement('select * from app_model_summary_sp(:lat,:lng,:radius)').params(lat = 1, lng = 1,radius = 1).all()
+    result = db.session.query().from_statement('select app_model_summary_sp(:lat,:lng,:radius)').params(lat = 1, lng = 1,radius = 1).all()
     #result = db.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
     return result
 
