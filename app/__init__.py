@@ -52,15 +52,8 @@ response = {
 }
  
 def get_summary_pg():
-    #result = db.session.query().from_statement('select * from app_summary_vw').all()
-    connection = db.engine.connect()
-    result = connection.execute("select number_of_fines from public.app_summary_vw")
-    #result = connection.execute("SELECT CURRENT_DATE as out_var")
-    for row in result:
-        outv =  row['number_of_fines']
-    connection.close()
-    #result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
-    return outv
+    result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
+    return row[0]['number_of_fines']
 
 def run_model(args):
     result = get_summary_pg()
