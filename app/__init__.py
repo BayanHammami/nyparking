@@ -63,12 +63,12 @@ response = {
 }
  
 def get_summary_pg():
-    result = db.session.query().from_statement('select * from app_summary_vw').all()
-    #result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
+    #result = db.session.query().from_statement('select * from app_summary_vw').all()
+    result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
     return result
 
 def run_model(args):
-    #get_summary_pg()
+    get_summary_pg()
     
     #relay back the request
     response['inputs']['data_set']=args['data_set']
