@@ -57,7 +57,7 @@ def get_summary_pg():
     result = connection.execute("select number_of_fines from public.app_summary_vw")
     #result = connection.execute("SELECT CURRENT_DATE as out_var")
     for row in result:
-        outv =  row['out_var']
+        outv =  row['number_of_fines']
     connection.close()
     #result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
     return outv
