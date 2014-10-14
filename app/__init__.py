@@ -3,11 +3,25 @@
 from flask import Flask, jsonify, abort, request, make_response, url_for
 from flask.ext.restful import reqparse
 from flask.ext.sqlalchemy import SQLAlchemy
+
 import os
  
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    email = db.Column(db.String(120), unique=True)
+
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+
 
 #validation of querystring parameters
 parser = reqparse.RequestParser()
@@ -49,7 +63,14 @@ response = {
     ]
 }
  
+def get_summary_pg():
+    result = db.session.query().from_statement('select * from app_model_summary_sp(:lat,:lng,:radius)').params(lat = 1, lng = 1,radius = 1).all()
+    #result = db.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
+    return result
+
 def run_model(args):
+    get_summary_pg()
+    
     #relay back the request
     response['inputs']['data_set']=args['data_set']
     response['inputs']['start_time']=args['start_time']
