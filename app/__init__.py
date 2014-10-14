@@ -54,7 +54,7 @@ response = {
 def get_summary_pg():
     result = db.session.query().from_statement('select number_of_fines from app_model_summary_sp(:lat,:lng,:radius)').params(lat = 1, lng = 1, radius=1).first()
     #result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
-    return result['number_of_fines']
+    return result[0]['number_of_fines']
 
 def run_model(args):
     result = get_summary_pg()
