@@ -64,7 +64,11 @@ response = {
  
 def get_summary_pg():
     #result = db.session.query().from_statement('select * from app_summary_vw').all()
-    db.engine.connect()
+    connection = db.engine.connect()
+    result = connection.execute("select number_of_fines from app_summary_vw")
+    for row in result:
+        print "number_of_fines:", row['number_of_fines']
+    connection.close()
     #result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
     return 0
 
