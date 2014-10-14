@@ -6,9 +6,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import os
  
 app = Flask(__name__)
-#app.config.from_object('app.config') 
 app.config.from_pyfile('config.py')
-
+db = SQLAlchemy(app)
 
 #validation of querystring parameters
 parser = reqparse.RequestParser()
