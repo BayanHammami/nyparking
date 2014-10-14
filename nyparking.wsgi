@@ -2,6 +2,6 @@
 import sys
 import logging
 logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0,"/var/www/nyparking/")
+sys.path.insert(0,"/var/www/nyparking/app")
 
 from runserver import app as application
