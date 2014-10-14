@@ -67,7 +67,7 @@ def get_summary_pg():
     #result = db.session.query().from_statement('select * from app_summary_vw').all()
     connection = db.engine.connect()
     #result = connection.execute("select number_of_fines from public.app_summary_vw")
-    result = connection.execute("SELECT count(*) as out_var c FROM pg_catalog.pg_tables")
+    result = connection.execute("SELECT count(*) as out_var FROM pg_catalog.pg_tables")
     for row in result:
         outv =  row['out_var']
     connection.close()
