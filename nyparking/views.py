@@ -6,6 +6,7 @@ from flask import jsonify, abort, request, make_response, url_for, g
 
 from datetime import datetime
 from datetime import time
+import time
 from db_manager import get_db_cursor
 
 #error handlers
@@ -74,19 +75,23 @@ def run_request_echo():
 def assess_risk():
     args = request.args.to_dict()
 
+    print args
+
     # try:
     lat = float(args['lat'])
     lng = float(args['lng'])
-    start_time = time.strptime(args['time'], '%H:%M')
+    # start_time = time.strptime(args['time'], '%H:%M')
+    start_time = datetime.strptime(args['time'], '%H:%M').time()
+
     duration = int(args['duration'])
-    data_set = args['year_option']
-    radius = args['circleradius']
+    data_set = int(args['year_option'])
+    radius = int(args['circleradius'])
     # except Exception e:
     #     return "Except"
 
-    return jsonify([lat, lng, radius, start_time, duration, data_set, True, True])
+    # return jsonify([lat, lng, radius, start_time, duration, data_set, True, True])
 
-    # return jsonify(risk_assessor.main(lat, lng, radius, start_time, duration, data_set, True, True))
+    return jsonify(risk_assessor.main(lat, lng, radius, start_time, duration, data_set, True, True))
 
 @app.route('/nyparking/assess_risk_test', methods = ['GET'])
 def assess_risk_test():
