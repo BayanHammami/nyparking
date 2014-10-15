@@ -1,4 +1,5 @@
 nyparking/config.py
+nyparking/apache/nyparking.conf
 
 # Python
 *.pyo
