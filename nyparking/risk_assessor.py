@@ -71,7 +71,7 @@ def get_time_distribution(latitude, longitude, radius, data_set, day_of_week):
 
     # sql = "select count(*) from "
 
-    sql = """SELECT EXTRACT(hour FROM issue_time) AS issue_hour, count(*) AS count FROM ny_parking_2013_consolidated c JOIN date_information di ON c.issue_date = di.date
+    sql = """SELECT EXTRACT(hour FROM issue_time) AS issue_hour, count(*) AS count FROM ny_parking_2013_consolidated2 c JOIN date_information di ON c.issue_date = di.date
         WHERE
             (di.day_of_week = %(day_of_week)s) AND
             (c.latitude BETWEEN %(lat_lower)s AND %(lat_upper)s) AND
@@ -119,7 +119,7 @@ def get_historical_sample(latitude, longitude, radius, start_time, duration, dat
     }
     
     if data_set == 2013:
-        sql = """SELECT c.latitude, c.longitude, c.issue_date, c.issue_time FROM ny_parking_2013_consolidated AS c JOIN date_information AS di ON c.issue_date = di.date
+        sql = """SELECT c.latitude, c.longitude, c.issue_date, c.issue_time FROM ny_parking_2013_consolidated2 AS c JOIN date_information AS di ON c.issue_date = di.date
         WHERE
             (c.latitude BETWEEN %(lat_lower)s AND %(lat_upper)s) AND
             (c.longitude BETWEEN %(long_lower)s AND %(long_upper)s) AND
@@ -194,14 +194,14 @@ def determine_risk(latitude, longitude, radius, start_time, duration, data_set =
         #     (geo_distance(latitude, longitude, %(lat)s, %(long)s) < %(radius)s)
         #     """
 
-        # sql = """SELECT count(*) FROM ny_parking_2013_consolidated WHERE
+        # sql = """SELECT count(*) FROM ny_parking_2013_consolidated2 WHERE
         #     (latitude BETWEEN %(lat_lower)s AND %(lat_upper)s) AND
         #     (longitude BETWEEN %(long_lower)s AND %(long_upper)s) AND
         #     (issue_date BETWEEN %(start_date)s AND (%(start_date)s::date + '1 day'::interval)) AND
         #     (geo_distance(latitude, longitude, %(lat)s, %(long)s) < %(radius)s)
         #     """
 
-        sql = """SELECT issue_date, count(*) AS count FROM ny_parking_2013_consolidated c JOIN date_information di ON c.issue_date = di.date
+        sql = """SELECT issue_date, count(*) AS count FROM ny_parking_2013_consolidated2 c JOIN date_information di ON c.issue_date = di.date
         WHERE
             (c.latitude BETWEEN %(lat_lower)s AND %(lat_upper)s) AND
             (c.longitude BETWEEN %(long_lower)s AND %(long_upper)s) AND

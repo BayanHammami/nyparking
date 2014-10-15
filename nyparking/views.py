@@ -5,6 +5,7 @@ import psycopg2
 from flask import jsonify, abort, request, make_response, url_for, g
 
 from datetime import datetime
+from datetime import time
 from db_manager import get_db_cursor
 
 #error handlers
@@ -71,6 +72,24 @@ def run_request_echo():
 
 @app.route('/nyparking/assess_risk', methods = ['GET'])
 def assess_risk():
+    args = request.args.to_dict()
+
+    # try:
+    lat = float(args['lat'])
+    lng = float(args['lng'])
+    start_time = time.strptime(args['time'], '%H:%M')
+    duration = int(args['duration'])
+    data_set = args['year_option']
+    radius = args['circleradius']
+    # except Exception e:
+    #     return "Except"
+
+    return jsonify([lat, lng, radius, start_time, duration, data_set, True, True])
+
+    # return jsonify(risk_assessor.main(lat, lng, radius, start_time, duration, data_set, True, True))
+
+@app.route('/nyparking/assess_risk_test', methods = ['GET'])
+def assess_risk_test():
     return jsonify(risk_assessor.main(40.725671, -73.984719, 150, datetime.now().time(), 60*3, 2013, True, True))
 
 #handle get request    
