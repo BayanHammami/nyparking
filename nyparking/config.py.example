@@ -1,1 +1,1 @@
-SQLALCHEMY_DATABASE_URI = 'postgresql://username:password@demodata.c3ctvtncfc4b.ap-southeast-2.rds.amazonaws.com:5432/demodata'
+PSYCOPG2_CONNECT_STRING = "host='db.amazonaws.com' dbname='the_db' user='username' password='password'"

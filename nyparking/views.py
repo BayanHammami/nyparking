@@ -1,39 +1,11 @@
+from nyparking import app, risk_assessor
 
-#!flask/bin/python
-from flask import Flask, jsonify, abort, request, make_response, url_for
-# from flask.ext.restful import reqparse
-from flask.ext.sqlalchemy import SQLAlchemy
+import psycopg2
 
-import os
+from flask import jsonify, abort, request, make_response, url_for, g
 
-from nyparking import app
- 
-# app = Flask(__name__)
-app.config.from_pyfile('config.py')
-db = SQLAlchemy(app)
-
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.String(80), unique=True)
-#     email = db.Column(db.String(120), unique=True)
-
-#     def __init__(self, username, email):
-#         self.username = username
-#         self.email = email
-
-#     def __repr__(self):
-#         return '<User %r>' % self.username
-
-
-#validation of querystring parameters
-# parser = reqparse.RequestParser()
-# parser.add_argument('data_set', type=str, required=True, location='args')
-# parser.add_argument('start_time', type=str, required=True, location='args')
-# parser.add_argument('duration', type=int, required=True, location='args')
-# parser.add_argument('radius', type=int, required=True, location='args')
-# parser.add_argument('lat', type=str, required=True, location='args')
-# parser.add_argument('lng', type=str, required=True, location='args', help='long cannot be converted')
-
+from datetime import datetime
+from db_manager import get_db_cursor
 
 #error handlers
 @app.errorhandler(400)
@@ -83,9 +55,23 @@ def run_model(args):
     response['inputs']['lng']=args['lng']
     return response
 
+@app.route('/nyparking/db_test', methods = ['GET'])
+def db_test():
+    cursor = get_db_cursor()
+
+    return "Connection established."
+
+@app.route('/nyparking/num_days')
+def get_number_of_valid_weekdays():
+    return str(risk_assessor.number_of_valid_weekdays)
+
 @app.route('/nyparking/request_echo', methods = ['GET'])
 def run_request_echo():
     return jsonify(request.args.to_dict())
+
+@app.route('/nyparking/assess_risk', methods = ['GET'])
+def assess_risk():
+    return jsonify(risk_assessor.main(40.725671, -73.984719, 150, datetime.now().time(), 60*3, 2013, True, True))
 
 #handle get request    
 @app.route('/nyparking/api/v1.0/model', methods = ['GET'])
@@ -93,7 +79,6 @@ def get_model():
     args = parser.parse_args()  
 
     return jsonify( { 'tasks': run_model(args) } )
-
     
-if __name__ == '__main__':
-    app.run(debug = True)
+# if __name__ == '__main__':
+#     app.run(debug = True)
