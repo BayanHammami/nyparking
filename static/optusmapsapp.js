@@ -150,38 +150,12 @@ jQuery(document).ready(function($) {
 
 
         // Create the data table.
-        var data = google.visualization.arrayToDataTable([
-          ['Hour', 'Count'],
-          ['1',  5],
-          ['2',  53],
-          ['3',  56],
-          ['4',  22],
-          ['5',  39],
-          ['6',  16],
-          ['7',  116],
-          ['8',  52],
-          ['9',  43],
-          ['10',  46],
-          ['11',  6],
-          ['12',  72],
-          ['13',  97],
-          ['14',  136],
-          ['15',  78],
-          ['16',  1],
-          ['17',  4],
-          ['18',  72],
-          ['19',  6],
-          ['20',  35],
-          ['21',  97],
-          ['22',  54],
-          ['23',  17],
-          ['24',  4]
-
-        ]);
+        var data = google.visualization.arrayToDataTable(time_distribution);
 
         // Set chart options
         var options = {
           title: 'Hourly Parking Tickets',
+          legend: 'none'
         };
                        
             var chart = new google.visualization.LineChart(document.getElementById('chart'));
@@ -225,11 +199,10 @@ jQuery(document).ready(function($) {
 		p_interval_end = p_interval_end*100;
 		most_likely_probability = most_likely_probability*100;
 
-		console.log(most_likely_probability.round(2).toString());
 
-		most_likely_probability = most_likely_probability.round(2).toString();
-
-		contentString = "Probability: " + most_likely_probability + ".";
+		contentString = 
+			"<div class='scrollFix'>Probability of a fine being issued in the specified area and time period: <br><b><span style='font-size:125%;color:#428bca'>"
+			+most_likely_probability.round(2)+"%</span></b></div>"
 
 		infowindow.setContent(contentString);
 
@@ -244,12 +217,8 @@ jQuery(document).ready(function($) {
 		most_likely_probability = most_likely_probability*100;
 
 		contentString = 
-			"In 2013, there was a " + most_likely_probability.round(2) +"%" + " probability of recieving a fine with a confidence interval of "
-			 + p_interval_start.round(2) + "%" + " to " + p_interval_end.round(2) + "%" + 
-			" in the area with centre address of " + point_address + " (lattitude:  " + lat.toFixed(4) + ", longitude: "+ lng.toFixed(4) + 
-			") and within " + circleradius 
-			+ " metres during a typical week day." +
-			" Within this time interval and area, there were " + number_of_fines + " fines issued."
+		"<div class='scrollFix'>Probability of a fine being issued in a specified area during a typical weekday: <br><b><span style='font-size:125%;color:#428bca'>"
+			+most_likely_probability.round(2)+"%</span></b></div>"
 
 		infowindow.setContent(contentString);
 
@@ -379,7 +348,7 @@ jQuery(document).ready(function($) {
 		$(window).resize(function(){
 			if($("#myModal").hasClass('open')){
 			    setTimeout(function(){
-			    	drawChart();
+			    	drawChart(time_distribution);
 			    }, 300);
 			}
 		});

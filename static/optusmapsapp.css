@@ -180,3 +180,32 @@ table{
 
 }
 
+#modalbtn{
+  border:0;
+}
+#modalbtn:hover{
+  background-color:#70AADD 
+}
+
+.modal-header{
+  background: #428bca; 
+  color: white;
+  border:0 !important;
+
+}
+
+.scrollFix {
+    line-height: 1.35;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+}
+
+#myModal{
+  border:0;
+
+}
+
+.sr-only{
+  background-color: white;
+}
