@@ -1,3 +1,9 @@
+nyparking/config.py
+
+# Python
+*.pyo
+*.pyc
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -14,6 +20,8 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
+
+
 # =========================
 # Operating System Files
 # =========================
@@ -26,7 +34,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
