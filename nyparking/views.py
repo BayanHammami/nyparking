@@ -16,29 +16,10 @@ def not_found(error):
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify( { 'error': 'Not found' } ), 404)
- 
-def get_summary_pg():
-    result = db.session.query().from_statement('select * from app_summary_vw').all()
-    #result = db.engine.execute('SELECT app_model_summary_sp(?,?,?)', 1, 2, 3).fetchall()
-
-    return result
-
-def run_model(args):
-    get_summary_pg()
-    
-    #relay back the request
-    response['inputs']['data_set']=args['data_set']
-    response['inputs']['start_time']=args['start_time']
-    response['inputs']['duration']=args['duration']
-    response['inputs']['radius']=args['radius']
-    response['inputs']['lat']=args['lat']
-    response['inputs']['lng']=args['lng']
-    return response
 
 @app.route('/nyparking/db_test', methods = ['GET'])
 def db_test():
     cursor = get_db_cursor()
-
     return "Connection established."
 
 @app.route('/nyparking/weekday_counts')
@@ -99,12 +80,3 @@ def assess_risk():
 def assess_risk_test():
     return jsonify(risk_assessor.main(40.725671, -73.984719, 150, datetime.now().time(), 60*3, 2013, True, True))
 
-#handle get request    
-@app.route('/nyparking/api/v1.0/model', methods = ['GET'])
-def get_model():
-    args = parser.parse_args()  
-
-    return jsonify( { 'tasks': run_model(args) } )
-    
-# if __name__ == '__main__':
-#     app.run(debug = True)
