@@ -1,8 +1,7 @@
 from nyparking import app, risk_assessor
 
 import psycopg2
-
-from flask import jsonify, abort, request, make_response, url_for, g
+from flask import send_from_directory, jsonify, abort, request, make_response, url_for, g
 
 from datetime import datetime
 from datetime import time
@@ -17,27 +16,6 @@ def not_found(error):
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify( { 'error': 'Not found' } ), 404)
- 
-# #base json response
-# response = {
-#     'number_of_fines': 0,
-#     'number_of_dates_with_fines': 0,
-#     'number_of_possible_dates': 0,
-#     'inputs': {
-#         'data_set': 0,
-#         'start_time': '',
-#         'lat': 0,
-#         'lng': 0,
-#         'duration': 0,
-#         'radius': 0
-#     },
-#     'most_likely_probability': 0,
-#     'probability_interval': 0,
-#     'historical_sample': [
-#         { 'lat': 40.662670, 'lng': -73.908203, 'time': '00:00' },
-#         { 'lat': 40.692677, 'lng': -73.988159, 'time': '00:00' }
-#     ]
-# }
  
 def get_summary_pg():
     result = db.session.query().from_statement('select * from app_summary_vw').all()
@@ -63,9 +41,33 @@ def db_test():
 
     return "Connection established."
 
-@app.route('/nyparking/num_days')
-def get_number_of_valid_weekdays():
-    return str(risk_assessor.number_of_valid_weekdays)
+@app.route('/nyparking/weekday_counts')
+def get_weekday_counts():
+    return jsonify(risk_assessor.weekday_counts)
+
+@app.route('/nyparking/date_ranges')
+def get_date_ranges():
+    return jsonify(risk_assessor.date_ranges)
+
+@app.route('/nyparking/time_distribution')
+def get_time_distribution():
+    args = request.args.to_dict()
+
+    lat = float(args['lat'])
+    lng = float(args['lng'])
+    start_time = datetime.strptime(args['time'], '%H:%M').time()
+
+    duration = int(args['duration'])
+    radius = int(args['circleradius'])
+
+    day_of_week = datetime.now().strftime('%A');
+
+    distribution = risk_assessor.get_time_distribution(lat, lng, radius, 2013, day_of_week)
+    return jsonify({
+        'description': 'The total number of fines over the past four %ss broken down by time of day (hour beginning). The strange format is for Google charts compatibility.' % day_of_week,
+        'time_distribution': distribution
+    })
+
 
 @app.route('/nyparking/request_echo', methods = ['GET'])
 def run_request_echo():

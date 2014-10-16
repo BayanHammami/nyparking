@@ -33,16 +33,69 @@ def make_sure_params_wont_nuke_service(params):
     if params['duration'] > 60*24:
         raise Exception("Duration is too long.")
 
-def get_number_of_valid_weekdays():
+def get_weekday_counts():
+    return_value = {
+        '2013_dataset': {},
+        '2010_dataset': {}
+    }
+
+    sql = """SELECT
+            to_char(date, 'day') AS day_of_week,
+            count(*) as count
+        FROM date_information
+        WHERE date > '2013-01-01'
+        GROUP BY to_char(date, 'day')"""
+
     cursor = get_db_cursor()
-    sql = "SELECT count(*) FROM date_information WHERE is_weekday"
-    print sql
     cursor.execute(sql)
-    result = cursor.fetchone()
-    return int(result[0])
+    results = cursor.fetchall()
+
+    for result in results:
+        return_value['2013_dataset'][result[0]] = int(result[1])
+
+    sql = """SELECT
+            count(*) as count,
+            extract(dow from date) in (0,6) as is_weekend
+        FROM date_information
+        WHERE extract(year from date) = 2010
+        GROUP BY extract(dow from date)"""
+
+    cursor.execute(sql)
+    results = cursor.fetchall()
+
+    return_value['2010_dataset']['weekday'] = sum([result[0] for result in results if not result[1]])
+    return_value['2010_dataset']['weekend'] = sum([result[0] for result in results if result[1]])
+
+    return return_value
+
+def get_date_ranges():
+    sql = "SELECT CASE WHEN date < '2013-01-01' THEN 2010 ELSE 2013 END AS dataset , max(date) AS newest, min(date) AS oldest FROM date_information GROUP BY date < '2013-01-01'";
+
+    print sql
+    cursor = get_db_cursor()
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    return_value = {}
+    for result in results:
+        return_value[str(result[0]) + '_dataset'] = {
+            'newest': result[1],
+            'oldest': result[2]
+        }
+    return return_value
+
+
+# def get_number_of_valid_weekdays():
+#     cursor = get_db_cursor()
+#     sql = "SELECT count(*) FROM date_information WHERE is_weekday"
+#     print sql
+#     cursor.execute(sql)
+#     result = cursor.fetchone()
+#     return int(result[0])
 
 with app.app_context():
-    number_of_valid_weekdays = get_number_of_valid_weekdays()
+    # number_of_valid_weekdays = get_number_of_valid_weekdays()
+    weekday_counts = get_weekday_counts()
+    date_ranges = get_date_ranges()
 
 @accepts(float, float, int, int, str)
 def get_time_distribution(latitude, longitude, radius, data_set, day_of_week):
@@ -58,6 +111,8 @@ def get_time_distribution(latitude, longitude, radius, data_set, day_of_week):
     lat_rough_angle = (180 * radius) / (math.pi * earth_radius) * 1.001
     long_rough_angle = lat_rough_angle / math.cos(math.radians(latitude))
 
+    most_recent_date = date_ranges['2013_dataset']['newest'].strftime('%Y-%m-%d')
+
     parameters = {
         'radius': radius,
         'lat': latitude,
@@ -66,19 +121,17 @@ def get_time_distribution(latitude, longitude, radius, data_set, day_of_week):
         'lat_upper': latitude + lat_rough_angle,
         'long_lower': longitude - long_rough_angle,
         'long_upper': longitude + long_rough_angle,
-        'day_of_week': day_of_week
+        'day_of_week': day_of_week,
+        'most_recent_date': most_recent_date
     }
 
-    # sql = "select count(*) from "
-
-    sql = """SELECT EXTRACT(hour FROM issue_time) AS issue_hour, count(*) AS count FROM ny_parking_2013_consolidated2 c JOIN date_information di ON c.issue_date = di.date
+    sql = """SELECT EXTRACT(hour FROM issue_time)::int AS issue_hour, count(*) AS count FROM ny_parking_2013_app c JOIN date_information di ON c.issue_date = di.date
         WHERE
             (di.day_of_week = %(day_of_week)s) AND
             (c.latitude BETWEEN %(lat_lower)s AND %(lat_upper)s) AND
             (c.longitude BETWEEN %(long_lower)s AND %(long_upper)s) AND
             (geo_distance(c.latitude, c.longitude, %(lat)s, %(long)s) < %(radius)s) AND
-            di.is_weekday IS TRUE AND
-            di.public_holiday IS FALSE
+            c.issue_date BETWEEN %(most_recent_date)s::date - (7*4) AND %(most_recent_date)s
         GROUP BY EXTRACT(hour FROM issue_time)
         """
 
@@ -89,11 +142,17 @@ def get_time_distribution(latitude, longitude, radius, data_set, day_of_week):
     cursor.execute(sql, parameters)
     results = cursor.fetchall()
 
-    result = [['hour'], ['count']]
-    for i in range(0, len(results[0])):
-        result[i].extend([value[i] for value in results])
+    print results
+    # return results
 
-    return result
+
+    return_value = [['hour'], ['count']]
+    
+    for i in range(0, len(results[0])):
+        return_value[i].extend([value[i] for value in results])
+    print return_value
+
+    return return_value
 
 
 @accepts(float, float, int, time, int, int)
@@ -119,7 +178,7 @@ def get_historical_sample(latitude, longitude, radius, start_time, duration, dat
     }
     
     if data_set == 2013:
-        sql = """SELECT c.latitude, c.longitude, c.issue_date, c.issue_time FROM ny_parking_2013_consolidated2 AS c JOIN date_information AS di ON c.issue_date = di.date
+        sql = """SELECT c.latitude, c.longitude, c.issue_date, c.issue_time FROM ny_parking_2013_app AS c JOIN date_information AS di ON c.issue_date = di.date
         WHERE
             (c.latitude BETWEEN %(lat_lower)s AND %(lat_upper)s) AND
             (c.longitude BETWEEN %(long_lower)s AND %(long_upper)s) AND
@@ -194,14 +253,14 @@ def determine_risk(latitude, longitude, radius, start_time, duration, data_set =
         #     (geo_distance(latitude, longitude, %(lat)s, %(long)s) < %(radius)s)
         #     """
 
-        # sql = """SELECT count(*) FROM ny_parking_2013_consolidated2 WHERE
+        # sql = """SELECT count(*) FROM ny_parking_2013_app WHERE
         #     (latitude BETWEEN %(lat_lower)s AND %(lat_upper)s) AND
         #     (longitude BETWEEN %(long_lower)s AND %(long_upper)s) AND
         #     (issue_date BETWEEN %(start_date)s AND (%(start_date)s::date + '1 day'::interval)) AND
         #     (geo_distance(latitude, longitude, %(lat)s, %(long)s) < %(radius)s)
         #     """
 
-        sql = """SELECT issue_date, count(*) AS count FROM ny_parking_2013_consolidated2 c JOIN date_information di ON c.issue_date = di.date
+        sql = """SELECT issue_date, count(*) AS count FROM ny_parking_2013_app c JOIN date_information di ON c.issue_date = di.date
         WHERE
             (c.latitude BETWEEN %(lat_lower)s AND %(lat_upper)s) AND
             (c.longitude BETWEEN %(long_lower)s AND %(long_upper)s) AND
